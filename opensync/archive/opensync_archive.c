@@ -54,7 +54,7 @@ static osync_bool osync_archive_create_changes(OSyncDB *db, const char *objtype,
     return TRUE;
   }
 
-  query = "CREATE TABLE tbl_changes (objtype VARCHAR(64), id INTEGER, uid VARCHAR, memberid INTEGER, mappingid INTEGER, PRIMARY KEY (objtype, id) )";
+  query = "CREATE TABLE tbl_changes (objtype VARCHAR(64) NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT, uid VARCHAR NOT NULL, memberid INTEGER NOT NULL, mappingid INTEGER NOT NULL )";
   if (!osync_db_query(db, query, error)) {
     goto error;
   }

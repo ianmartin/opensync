@@ -169,9 +169,9 @@ void osync_member_set_schemadir(OSyncMember *member, const char *schemadir)
   osync_assert(schemadir);
 
   if (member->schemadir)
-    g_free(member->schemadir);
+    osync_free(member->schemadir);
 
-  member->schemadir = g_strdup(schemadir); 
+  member->schemadir = osync_strdup(schemadir); 
 }
 #endif /* OPENSYNC_UNITTESTS */
 
@@ -236,13 +236,13 @@ void osync_member_unref(OSyncMember *member)
   if (g_atomic_int_dec_and_test(&(member->ref_count))) {
 
     if (member->pluginname)
-      g_free(member->pluginname);
+      osync_free(member->pluginname);
 
     if (member->name)
-      g_free(member->name);
+      osync_free(member->name);
 
     if (member->configdir)
-      g_free(member->configdir);
+      osync_free(member->configdir);
 		
     if (member->config)
       osync_plugin_config_unref(member->config);
@@ -257,11 +257,11 @@ void osync_member_unref(OSyncMember *member)
 
 #ifdef OPENSYNC_UNITTESTS
     if (member->schemadir)
-      g_free(member->schemadir);
+      osync_free(member->schemadir);
 #endif /* OPENSYNC_UNITTESTS */
 
 
-    g_free(member);
+    osync_free(member);
   }
 }
 
@@ -287,8 +287,8 @@ void osync_member_set_pluginname(OSyncMember *member, const char *pluginname)
 {
   osync_assert(member);
   if (member->pluginname)
-    g_free(member->pluginname);
-  member->pluginname = g_strdup(pluginname);
+    osync_free(member->pluginname);
+  member->pluginname = osync_strdup(pluginname);
 }
 
 /** @brief Returns the inidividual name of the member
@@ -313,8 +313,8 @@ void osync_member_set_name(OSyncMember *member, const char *name)
 {
   osync_assert(member);
   if (member->name)
-    g_free(member->name);
-  member->name = g_strdup(name);
+    osync_free(member->name);
+  member->name = osync_strdup(name);
 }
 
 /** @brief Returns the configuration directory where this member is stored
@@ -339,8 +339,8 @@ void osync_member_set_configdir(OSyncMember *member, const char *configdir)
 {
   osync_assert(member);
   if (member->configdir)
-    g_free(member->configdir);
-  member->configdir = g_strdup(configdir);
+    osync_free(member->configdir);
+  member->configdir = osync_strdup(configdir);
 }
 
 /** @brief Gets the configuration data of this member
@@ -372,7 +372,7 @@ OSyncPluginConfig *osync_member_get_config_or_default(OSyncMember *member, OSync
     return member->config;
   }
 
-  filename = g_strdup_printf("%s"G_DIR_SEPARATOR_S"%s.conf", member->configdir, member->pluginname);
+  filename = osync_strdup_printf("%s"G_DIR_SEPARATOR_S"%s.conf", member->configdir, member->pluginname);
 
   config = osync_plugin_config_new(error);
   if (!config)
@@ -380,8 +380,8 @@ OSyncPluginConfig *osync_member_get_config_or_default(OSyncMember *member, OSync
 	
   osync_trace(TRACE_INTERNAL, "Reading %s", filename);
   if (!g_file_test(filename, G_FILE_TEST_IS_REGULAR)) {
-    g_free(filename);
-    filename = g_strdup_printf(OPENSYNC_CONFIGDIR G_DIR_SEPARATOR_S"%s", member->pluginname);
+    osync_free(filename);
+    filename = osync_strdup_printf(OPENSYNC_CONFIGDIR G_DIR_SEPARATOR_S"%s", member->pluginname);
     osync_trace(TRACE_INTERNAL, "Reading default %s", filename);
   }
 
@@ -395,7 +395,7 @@ OSyncPluginConfig *osync_member_get_config_or_default(OSyncMember *member, OSync
 		
   osync_member_set_config(member, config);
 
-  g_free(filename);
+  osync_free(filename);
 
   osync_trace(TRACE_EXIT, "%s: Read default config", __func__);
   return config;
@@ -403,7 +403,7 @@ OSyncPluginConfig *osync_member_get_config_or_default(OSyncMember *member, OSync
  error_free_config:
   osync_plugin_config_unref(config);
  error:
-  g_free(filename);
+  osync_free(filename);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return NULL;
 }
@@ -449,7 +449,7 @@ OSyncPluginConfig *osync_member_get_config(OSyncMember *member, OSyncError **err
     return member->config;
   }
 	
-  filename = g_strdup_printf("%s%c%s.conf", member->configdir, G_DIR_SEPARATOR, member->pluginname);
+  filename = osync_strdup_printf("%s%c%s.conf", member->configdir, G_DIR_SEPARATOR, member->pluginname);
   osync_trace(TRACE_INTERNAL, "Reading config from: %s", filename);
 	
   if (!g_file_test(filename, G_FILE_TEST_IS_REGULAR)) {
@@ -469,7 +469,7 @@ OSyncPluginConfig *osync_member_get_config(OSyncMember *member, OSyncError **err
   if (!osync_plugin_config_file_load(config, filename, schemadir, error))
     goto error_free_config;
 
-  g_free(filename);
+  osync_free(filename);
 
   osync_member_set_config(member, config);
   osync_plugin_config_unref(config);
@@ -480,7 +480,7 @@ OSyncPluginConfig *osync_member_get_config(OSyncMember *member, OSyncError **err
  error_free_config:
   osync_plugin_config_unref(config);
  error:
-  g_free(filename);
+  osync_free(filename);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return NULL;
 }
@@ -522,7 +522,7 @@ osync_bool osync_member_load(OSyncMember *member, const char *path, OSyncError *
 	
   osync_trace(TRACE_ENTRY, "%s(%p, %s, %p)", __func__, member, path, error);
 
-  filename = g_strdup_printf ("%s%csyncmember.conf", path, G_DIR_SEPARATOR);
+  filename = osync_strdup_printf ("%s%csyncmember.conf", path, G_DIR_SEPARATOR);
 	
   basename = g_path_get_basename(path);
   member->id = atoi(basename);
@@ -530,16 +530,16 @@ osync_bool osync_member_load(OSyncMember *member, const char *path, OSyncError *
   osync_member_set_configdir(member, path);
 	
   if (!osync_xml_open_file(&doc, &cur, filename, "syncmember", error)) {
-    g_free(filename);
+    osync_free(filename);
     goto error;
   }
-  g_free(filename);
+  osync_free(filename);
 
   while (cur != NULL) {
     char *str = (char*)xmlNodeGetContent(cur);
     if (str) {
       if (!xmlStrcmp(cur->name, (const xmlChar *)"pluginname")) {
-        member->pluginname = g_strdup(str);
+        member->pluginname = osync_strdup(str);
       } else if (!xmlStrcmp(cur->name, (const xmlChar *)"objtype")) {
         OSyncObjTypeSink *sink = _osync_member_parse_objtype(cur->xmlChildrenNode, error);
         if (!sink)
@@ -592,9 +592,9 @@ static osync_bool _osync_member_save_sink_add_timeout(xmlNode *cur, const char *
   if (!timeout)
     return TRUE;
 
-  str = g_strdup_printf("%u", timeout);
+  str = osync_strdup_printf("%u", timeout);
   xmlNewChild(cur, NULL, (xmlChar*)timeoutname, BAD_CAST str);
-  g_free(str);
+  osync_free(str);
 
   return TRUE;
 }
@@ -690,9 +690,9 @@ osync_bool osync_member_save(OSyncMember *member, OSyncError **error)
   doc = xmlNewDoc((xmlChar*)"1.0");
   doc->children = xmlNewDocNode(doc, NULL, (xmlChar*)"syncmember", NULL);
 
-  version_str = g_strdup_printf("%u.%u", OSYNC_MEMBER_MAJOR_VERSION, OSYNC_MEMBER_MINOR_VERSION);
+  version_str = osync_strdup_printf("%u.%u", OSYNC_MEMBER_MAJOR_VERSION, OSYNC_MEMBER_MINOR_VERSION);
   xmlSetProp(doc->children, (const xmlChar*)"version", (const xmlChar *)version_str);	
-  g_free(version_str);
+  osync_free(version_str);
 
   //The plugin name
   xmlNewChild(doc->children, NULL, (xmlChar*)"pluginname", (xmlChar*)member->pluginname);
@@ -716,21 +716,21 @@ osync_bool osync_member_save(OSyncMember *member, OSyncError **error)
   /* TODO Validate file before storing! */
 
   //Saving the syncmember.conf
-  filename = g_strdup_printf ("%s%csyncmember.conf", member->configdir, G_DIR_SEPARATOR);
+  filename = osync_strdup_printf ("%s%csyncmember.conf", member->configdir, G_DIR_SEPARATOR);
   xmlSaveFormatFile(filename, doc, 1);
-  g_free(filename);
+  osync_free(filename);
 
   osync_xml_free_doc(doc);
 	
   //Saving the config if it exists
   if (member->config) {
-    filename = g_strdup_printf("%s%c%s.conf", member->configdir, G_DIR_SEPARATOR, member->pluginname);
+    filename = osync_strdup_printf("%s%c%s.conf", member->configdir, G_DIR_SEPARATOR, member->pluginname);
     if (!osync_plugin_config_file_save(member->config, filename, error)) {
-      g_free(filename);
+      osync_free(filename);
       goto error;
     }
 		
-    g_free(filename);
+    osync_free(filename);
   }
 	
   capabilities = osync_member_get_capabilities(member);
@@ -761,14 +761,14 @@ osync_bool osync_member_delete(OSyncMember *member, OSyncError **error)
   osync_trace(TRACE_ENTRY, "%s(%p, %p)", __func__, member, error);
   osync_assert(member);
 	
-  delcmd = g_strdup_printf("rm -rf %s", member->configdir);
+  delcmd = osync_strdup_printf("rm -rf %s", member->configdir);
   if (system(delcmd)) {
     osync_error_set(error, OSYNC_ERROR_GENERIC, "Failed to delete member. command %s failed", delcmd);
-    g_free(delcmd);
+    osync_free(delcmd);
     osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
     return FALSE;
   }
-  g_free(delcmd);
+  osync_free(delcmd);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return TRUE;
@@ -1082,7 +1082,7 @@ osync_bool osync_member_config_is_uptodate(OSyncMember *member)
   osync_assert(member);
   osync_trace(TRACE_ENTRY, "%s(%p)", __func__, member);
 
-  config = g_strdup_printf("%s%c%s",
+  config = osync_strdup_printf("%s%c%s",
                            osync_member_get_configdir(member),
                            G_DIR_SEPARATOR, "syncmember.conf");
 	
@@ -1109,7 +1109,7 @@ osync_bool osync_member_config_is_uptodate(OSyncMember *member)
   osync_xml_free(version_str);
 
  end:
-  g_free(config);
+  osync_free(config);
 
   osync_trace(TRACE_EXIT, "%s(%p)", __func__, member);
   return uptodate;
@@ -1135,7 +1135,7 @@ osync_bool osync_member_plugin_is_uptodate(OSyncMember *member)
   osync_assert(member);
   osync_trace(TRACE_ENTRY, "%s(%p)", __func__, member);
 
-  config = g_strdup_printf("%s%c%s",
+  config = osync_strdup_printf("%s%c%s",
                            osync_member_get_configdir(member),
                            G_DIR_SEPARATOR, osync_member_get_pluginname(member));
 	
@@ -1162,7 +1162,7 @@ osync_bool osync_member_plugin_is_uptodate(OSyncMember *member)
   osync_xml_free(version_str);
 
  end:
-  g_free(config);
+  osync_free(config);
 
   if (doc)
     osync_xml_free_doc(doc);

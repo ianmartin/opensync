@@ -263,14 +263,14 @@ static void _osync_client_proxy_init_handler(OSyncMessage *message, void *user_d
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->init_callback(proxy, ctx->init_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -296,14 +296,14 @@ static void _osync_client_proxy_fin_handler(OSyncMessage *message, void *user_da
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->fin_callback(proxy, ctx->fin_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -359,35 +359,35 @@ static void _osync_client_proxy_discover_handler(OSyncMessage *message, void *us
 			
       osync_message_read_string(message, &str);
       osync_version_set_plugin(version, str);
-      g_free(str);
+      osync_free(str);
       osync_message_read_string(message, &str);
       osync_version_set_priority(version, str);
-      g_free(str);
+      osync_free(str);
       osync_message_read_string(message, &str);
       osync_version_set_vendor(version, str);
-      g_free(str);
+      osync_free(str);
       osync_message_read_string(message, &str);
       osync_version_set_modelversion(version, str);
-      g_free(str);
+      osync_free(str);
       osync_message_read_string(message, &str);
       osync_version_set_firmwareversion(version, str);
-      g_free(str);
+      osync_free(str);
       osync_message_read_string(message, &str);
       osync_version_set_softwareversion(version, str);
-      g_free(str);
+      osync_free(str);
       osync_message_read_string(message, &str);
       osync_version_set_hardwareversion(version, str);
-      g_free(str);
+      osync_free(str);
       osync_message_read_string(message, &str);
       osync_version_set_identifier(version, str);
-      g_free(str);	
+      osync_free(str);	
     }
 				
     osync_message_read_int(message, &sent_capabilities);
     if (sent_capabilities) {
       osync_message_read_string(message, &str);
       capabilities = osync_capabilities_parse(str, strlen(str), &locerror);
-      g_free(str);
+      osync_free(str);
       if(!capabilities) {
         goto error_free_version;
       }
@@ -456,7 +456,7 @@ static void _osync_client_proxy_discover_handler(OSyncMessage *message, void *us
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
@@ -469,7 +469,7 @@ static void _osync_client_proxy_discover_handler(OSyncMessage *message, void *us
     osync_version_unref(version);
  error:
   ctx->discover_callback(proxy, ctx->discover_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -497,14 +497,14 @@ static void _osync_client_proxy_connect_handler(OSyncMessage *message, void *use
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->connect_callback(proxy, ctx->connect_callback_data, FALSE, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -530,14 +530,14 @@ static void _osync_client_proxy_disconnect_handler(OSyncMessage *message, void *
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->disconnect_callback(proxy, ctx->disconnect_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -563,14 +563,14 @@ static void _osync_client_proxy_read_handler(OSyncMessage *message, void *user_d
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->read_callback(proxy, ctx->read_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -596,14 +596,14 @@ static void _osync_client_proxy_get_changes_handler(OSyncMessage *message, void 
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->get_changes_callback(proxy, ctx->get_changes_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -622,7 +622,7 @@ static void _osync_client_proxy_commit_change_handler(OSyncMessage *message, voi
     char *uid = NULL;
     osync_message_read_string(message, &uid);
     ctx->commit_change_callback(proxy, ctx->commit_change_callback_data, uid, NULL);
-    g_free(uid);
+    osync_free(uid);
   } else if (osync_message_get_cmd(message) == OSYNC_MESSAGE_ERRORREPLY) {
     osync_demarshal_error(message, &error);
     ctx->commit_change_callback(proxy, ctx->commit_change_callback_data, NULL, error);
@@ -632,14 +632,14 @@ static void _osync_client_proxy_commit_change_handler(OSyncMessage *message, voi
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->commit_change_callback(proxy, ctx->commit_change_callback_data, NULL, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -665,14 +665,14 @@ static void _osync_client_proxy_committed_all_handler(OSyncMessage *message, voi
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->committed_all_callback(proxy, ctx->committed_all_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -698,14 +698,14 @@ static void _osync_client_proxy_sync_done_handler(OSyncMessage *message, void *u
     goto error;
   }
 	
-  g_free(ctx);
+  osync_free(ctx);
 	
   osync_trace(TRACE_EXIT, "%s", __func__);
   return;
 	
  error:
   ctx->sync_done_callback(proxy, ctx->sync_done_callback_data, locerror);
-  g_free(ctx);
+  osync_free(ctx);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&locerror));
   osync_error_unref(&locerror);
   return;
@@ -803,7 +803,7 @@ void osync_client_proxy_unref(OSyncClientProxy *proxy)
     if (proxy->context)
       g_main_context_unref(proxy->context);
 		
-    g_free(proxy);
+    osync_free(proxy);
   }
 }
 
@@ -898,8 +898,8 @@ osync_bool osync_client_proxy_spawn(OSyncClientProxy *proxy, OSyncStartType type
           osync_trace(TRACE_INTERNAL, "About to exec osplugin");
           //char *memberstring = g_strdup_printf("%lli", osync_member_get_id(proxy->member));
           //execlp("osplugin", "osplugin", osync_group_get_configdir(osync_member_get_group(osync_proxy_get_member(proxy)), memberstring, NULL);
-          readfd = g_strdup_printf("%i", osync_queue_get_fd(read1));
-          writefd = g_strdup_printf("%i", osync_queue_get_fd(write2));
+          readfd = osync_strdup_printf("%i", osync_queue_get_fd(read1));
+          writefd = osync_strdup_printf("%i", osync_queue_get_fd(write2));
           execlp(OSPLUGIN, "osplugin", "-f", readfd, writefd, NULL);
 
           if (errno == ENOENT) {
@@ -942,15 +942,15 @@ osync_bool osync_client_proxy_spawn(OSyncClientProxy *proxy, OSyncStartType type
     if (!osync_queue_connect(proxy->outgoing, OSYNC_QUEUE_SENDER, error))
       goto error;
   } else {
-    name = g_strdup_printf("%s%cpluginpipe", path, G_DIR_SEPARATOR);
+    name = osync_strdup_printf("%s%cpluginpipe", path, G_DIR_SEPARATOR);
     proxy->outgoing = osync_queue_new(name, error);
-    g_free(name);
+    osync_free(name);
     if (!proxy->outgoing)
       goto error;
 		
-    name = g_strdup_printf("%s%cenginepipe", path, G_DIR_SEPARATOR);
+    name = osync_strdup_printf("%s%cenginepipe", path, G_DIR_SEPARATOR);
     proxy->incoming = osync_queue_new(name, error);
-    g_free(name);
+    osync_free(name);
     if (!proxy->incoming)
       goto error;
 			
@@ -1357,7 +1357,7 @@ osync_bool osync_client_proxy_connect(OSyncClientProxy *proxy, connect_cb callba
  error_free_message:
   osync_message_unref(message);
  error_free_context:
-  g_free(ctx);
+  osync_free(ctx);
  error:
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -1405,7 +1405,7 @@ osync_bool osync_client_proxy_disconnect(OSyncClientProxy *proxy, disconnect_cb 
  error_free_message:
   osync_message_unref(message);
  error_free_context:
-  g_free(ctx);
+  osync_free(ctx);
  error:
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -1454,7 +1454,7 @@ osync_bool osync_client_proxy_read(OSyncClientProxy *proxy, read_cb callback, vo
  error_free_message:
   osync_message_unref(message);
  error_free_context:
-  g_free(ctx);
+  osync_free(ctx);
  error:
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -1503,7 +1503,7 @@ osync_bool osync_client_proxy_get_changes(OSyncClientProxy *proxy, get_changes_c
  error_free_message:
   osync_message_unref(message);
  error_free_context:
-  g_free(ctx);
+  osync_free(ctx);
  error:
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -1554,7 +1554,7 @@ osync_bool osync_client_proxy_commit_change(OSyncClientProxy *proxy, commit_chan
  error_free_message:
   osync_message_unref(message);
  error_free_context:
-  g_free(ctx);
+  osync_free(ctx);
  error:
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -1603,7 +1603,7 @@ osync_bool osync_client_proxy_committed_all(OSyncClientProxy *proxy, committed_a
  error_free_message:
   osync_message_unref(message);
  error_free_context:
-  g_free(ctx);
+  osync_free(ctx);
  error:
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -1652,7 +1652,7 @@ osync_bool osync_client_proxy_sync_done(OSyncClientProxy *proxy, sync_done_cb ca
  error_free_message:
   osync_message_unref(message);
  error_free_context:
-  g_free(ctx);
+  osync_free(ctx);
  error:
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;

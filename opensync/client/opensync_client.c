@@ -90,7 +90,7 @@ static void _free_baton(callContext *baton)
   if (baton->change)
     osync_change_unref(baton->change);
 	
-  g_free(baton);
+  osync_free(baton);
 }
 
 static void _osync_client_connect_callback(void *data, OSyncError *error)
@@ -116,11 +116,11 @@ static void _osync_client_connect_callback(void *data, OSyncError *error)
 		
     if (!sink) {
       osync_error_set(&locerror, OSYNC_ERROR_GENERIC, "Unable to find sink for %s", objtype);
-      g_free(objtype);
+      osync_free(objtype);
       goto error;
     }
 		
-    g_free(objtype);
+    osync_free(objtype);
   } else {
     // main sink
     sink = osync_plugin_info_get_sink(client->plugin_info);
@@ -652,12 +652,12 @@ static osync_bool _osync_client_handle_initialize(OSyncClient *client, OSyncMess
 	
   osync_message_unref(reply);
 		
-  g_free(enginepipe);
-  g_free(pluginname);
-  g_free(configdir);
-  g_free(plugindir);
-  g_free(groupname);
-  g_free(formatdir);
+  osync_free(enginepipe);
+  osync_free(pluginname);
+  osync_free(configdir);
+  osync_free(plugindir);
+  osync_free(groupname);
+  osync_free(formatdir);
 	
   if (config)
     osync_plugin_config_unref(config);
@@ -670,12 +670,12 @@ static osync_bool _osync_client_handle_initialize(OSyncClient *client, OSyncMess
  error_finalize:
   osync_plugin_finalize(client->plugin, client->plugin_data);
  error:
-  g_free(enginepipe);
-  g_free(pluginname);
-  g_free(configdir);
-  g_free(plugindir);
-  g_free(groupname);
-  g_free(formatdir);
+  osync_free(enginepipe);
+  osync_free(pluginname);
+  osync_free(configdir);
+  osync_free(plugindir);
+  osync_free(groupname);
+  osync_free(formatdir);
 
   if (config)
     osync_plugin_config_unref(config);
@@ -864,11 +864,11 @@ static osync_bool _osync_client_handle_connect(OSyncClient *client, OSyncMessage
 		
     if (!sink) {
       osync_error_set(error, OSYNC_ERROR_GENERIC, "Unable to find sink for %s", objtype);
-      g_free(objtype);
+      osync_free(objtype);
       goto error;
     }
 		
-    g_free(objtype);
+    osync_free(objtype);
   } else
     sink = osync_plugin_info_get_main_sink(client->plugin_info);
 		
@@ -931,11 +931,11 @@ static osync_bool _osync_client_handle_disconnect(OSyncClient *client, OSyncMess
 		
     if (!sink) {
       osync_error_set(error, OSYNC_ERROR_GENERIC, "Unable to find sink for %s", objtype);
-      g_free(objtype);
+      osync_free(objtype);
       goto error;
     }
 		
-    g_free(objtype);
+    osync_free(objtype);
   } else
     sink = osync_plugin_info_get_main_sink(client->plugin_info);
 		
@@ -987,11 +987,11 @@ static osync_bool _osync_client_handle_get_changes(OSyncClient *client, OSyncMes
 		
     if (!sink) {
       osync_error_set(error, OSYNC_ERROR_GENERIC, "Unable to find sink for %s", objtype);
-      g_free(objtype);
+      osync_free(objtype);
       goto error;
     }
 		
-    g_free(objtype);
+    osync_free(objtype);
   } else
     sink = osync_plugin_info_get_main_sink(client->plugin_info);
 		
@@ -1155,11 +1155,11 @@ static osync_bool _osync_client_handle_committed_all(OSyncClient *client, OSyncM
 		
     if (!sink) {
       osync_error_set(error, OSYNC_ERROR_GENERIC, "Unable to find sink for %s", objtype);
-      g_free(objtype);
+      osync_free(objtype);
       goto error;
     }
 		
-    g_free(objtype);
+    osync_free(objtype);
   } else
     sink = osync_plugin_info_get_main_sink(client->plugin_info);
 		
@@ -1209,11 +1209,11 @@ static osync_bool _osync_client_handle_sync_done(OSyncClient *client, OSyncMessa
 		
     if (!sink) {
       osync_error_set(error, OSYNC_ERROR_GENERIC, "Unable to find sink for %s", objtype);
-      g_free(objtype);
+      osync_free(objtype);
       goto error;
     }
 		
-    g_free(objtype);
+    osync_free(objtype);
   } else
     sink = osync_plugin_info_get_main_sink(client->plugin_info);
 		
@@ -1474,7 +1474,7 @@ void osync_client_unref(OSyncClient *client)
     if (client->thread)
       osync_thread_free(client->thread);
 		
-    g_free(client);
+    osync_free(client);
 		
     osync_trace(TRACE_EXIT, "%s", __func__);
   }

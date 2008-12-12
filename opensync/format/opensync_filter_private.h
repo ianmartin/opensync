@@ -21,7 +21,14 @@
 #ifndef _OPENSYNC_FILTER_PRIVATE_H_
 #define _OPENSYNC_FILTER_PRIVATE_H_
 
-/*! @brief Represents a filter to filter changes 
+/**
+ * @defgroup OSyncFilterPrivateAPI OpenSync Filter Private
+ * @ingroup OSyncFormatPrivate
+ */
+
+/*@{*/
+
+/** @brief Represents a filter to filter changes 
  * @ingroup OSyncFilterPrivate
  **/
 struct OSyncFilter {
@@ -42,6 +49,8 @@ struct OSyncCustomFilter {
 	OSyncFilterFunction hook;
 	int ref_count;
 };
+
+/*@}*/
 
 #endif /* _OPENSYNC_FILTER_PRIVATE_H_ */
 

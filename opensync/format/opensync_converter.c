@@ -29,24 +29,6 @@
 
 #include "opensync_converter_private.h"
 
-
-/**
- * @defgroup OSyncConverterAPI OpenSync Converter
- * @ingroup OSyncPublic
- * @brief Functions for creating and managing object format converters
- * 
- */
-/*@{*/
-
-/**
- * @brief Creates a new converter
- * @param type the type of converter
- * @param sourceformat the source format for the converter
- * @param targetformat the target format for the converter
- * @param convert_func the converter function
- * @param error Pointer to an error struct
- * @returns The pointer to the newly allocated converter or NULL in case of error
- */
 OSyncFormatConverter *osync_converter_new(OSyncConverterType type, OSyncObjFormat *sourceformat, OSyncObjFormat *targetformat, OSyncFormatConvertFunc convert_func, OSyncError **error)
 {
 	OSyncFormatConverter *converter = NULL;
@@ -75,15 +57,6 @@ OSyncFormatConverter *osync_converter_new(OSyncConverterType type, OSyncObjForma
 	return converter;
 }
 
-/**
- * @brief Creates a new detector
- *
- * @param sourceformat the source format for the converter
- * @param targetformat the target format for the converter
- * @param detect_func the detection function
- * @param error Pointer to an error struct
- * @returns The pointer to the newly allocated detector or NULL in case of error
- */
 OSyncFormatConverter *osync_converter_new_detector(OSyncObjFormat *sourceformat, OSyncObjFormat *targetformat, OSyncFormatDetectFunc detect_func, OSyncError **error)
 {
 	OSyncFormatConverter *converter = NULL;
@@ -112,11 +85,6 @@ OSyncFormatConverter *osync_converter_new_detector(OSyncObjFormat *sourceformat,
 	return converter;
 }
 
-/*! @brief Increase the reference count on a converter
- * 
- * @param converter Pointer to the converter
- * 
- */
 OSyncFormatConverter *osync_converter_ref(OSyncFormatConverter *converter)
 {
 	osync_assert(converter);
@@ -126,11 +94,6 @@ OSyncFormatConverter *osync_converter_ref(OSyncFormatConverter *converter)
 	return converter;
 }
 
-/*! @brief Decrease the reference count on a converter
- * 
- * @param converter Pointer to the converter
- * 
- */
 void osync_converter_unref(OSyncFormatConverter *converter)
 {
 	osync_assert(converter);
@@ -146,45 +109,24 @@ void osync_converter_unref(OSyncFormatConverter *converter)
 	}
 }
 
-/**
- * @brief Returns the source format of a converter
- * @param converter Pointer to the converter
- * @returns The source format of the specified converter
- */
 OSyncObjFormat *osync_converter_get_sourceformat(OSyncFormatConverter *converter)
 {
 	osync_assert(converter);
 	return converter->source_format;
 }
 
-/**
- * @brief Returns the target format of a converter
- * @param converter Pointer to the converter
- * @returns The target format of the specified converter
- */
 OSyncObjFormat *osync_converter_get_targetformat(OSyncFormatConverter *converter)
 {
 	osync_assert(converter);
 	return converter->target_format;
 }
 
-/**
- * @brief Returns the type of a converter
- * @param converter Pointer to the converter
- * @returns The type of the specified converter
- */
 OSyncConverterType osync_converter_get_type(OSyncFormatConverter *converter)
 {
 	osync_assert(converter);
 	return converter->type;
 }
 
-/**
- * @brief Detects the Object Format of passed OSyncData 
- * @param detector Pointer to the detector 
- * @param data Pointer to OSyncData object which should be detected
- * @returns The detected Object Format or NULL 
- */
 OSyncObjFormat *osync_converter_detect(OSyncFormatConverter *detector, OSyncData *data)
 {
 	OSyncObjFormat *sourceformat = NULL;
@@ -226,15 +168,6 @@ OSyncObjFormat *osync_converter_detect(OSyncFormatConverter *detector, OSyncData
 	return NULL;
 }
 
-/**
- * @brief Invokes converter for OSyncData object with passed format converter configuration 
- *
- * @param converter Pointer to the converter 
- * @param data Pointer to OSyncData object which should be detected
- * @param config Format converter configuration
- * @param error Pointer to an error struct
- * @returns TRUE on successful conversion, FALSE on error
- */
 osync_bool osync_converter_invoke(OSyncFormatConverter *converter, OSyncData *data, const char *config, OSyncError **error)
 {
 	char *input_data = NULL;
@@ -284,12 +217,6 @@ error:
 	return FALSE;
 }
 
-/**
- * @brief Checks if the Format Converter fits the Object Format of OSyncData object 
- * @param converter Pointer to the converter 
- * @param data Pointer to OSyncData object which should be converted 
- * @returns TRUE if Object Format matches the Converter source format, FALSE otherwise
- */
 osync_bool osync_converter_matches(OSyncFormatConverter *converter, OSyncData *data)
 {
 	OSyncObjFormat *format = NULL;
@@ -302,11 +229,6 @@ osync_bool osync_converter_matches(OSyncFormatConverter *converter, OSyncData *d
 	return FALSE;
 }
 
-/**
- * @brief Creates a new converter path
- * @param error Pointer to an error struct
- * @returns The pointer to the newly allocated converter path or NULL in case of error
- */
 OSyncFormatConverterPath *osync_converter_path_new(OSyncError **error)
 {
 	OSyncFormatConverterPath *path = osync_try_malloc0(sizeof(OSyncFormatConverterPath), error);
@@ -318,12 +240,6 @@ OSyncFormatConverterPath *osync_converter_path_new(OSyncError **error)
 	return path;
 }
 
-/*! @brief Increase the reference count on a converter path
- * 
- * @param path Pointer to the converter path
- * @returns Pointer of converter path object
- * 
- */
 OSyncFormatConverterPath *osync_converter_path_ref(OSyncFormatConverterPath *path)
 {
 	osync_assert(path);
@@ -333,11 +249,6 @@ OSyncFormatConverterPath *osync_converter_path_ref(OSyncFormatConverterPath *pat
 	return path;
 }
 
-/*! @brief Decrease the reference count on a converter path
- * 
- * @param path Pointer to the converter path
- * 
- */
 void osync_converter_path_unref(OSyncFormatConverterPath *path)
 {
 	osync_assert(path);
@@ -356,10 +267,6 @@ void osync_converter_path_unref(OSyncFormatConverterPath *path)
 	}
 }
 
-/*! @brief Add a converter to a converter path
- * @param path Pointer to the converter path
- * @param edge Pointer to the converter to add
- */
 void osync_converter_path_add_edge(OSyncFormatConverterPath *path, OSyncFormatConverter *edge)
 {
 	osync_assert(path);
@@ -369,41 +276,24 @@ void osync_converter_path_add_edge(OSyncFormatConverterPath *path, OSyncFormatCo
 	osync_converter_ref(edge);
 }
 
-/*! @brief Returns the number of converters in a converter path
- * @param path Pointer to the converter path
- * @returns the number of converters in the specified path
- */
 unsigned int osync_converter_path_num_edges(OSyncFormatConverterPath *path)
 {
 	osync_assert(path);
 	return g_list_length(path->converters);
 }
 
-/*! @brief Returns the nth converter in a converter path
- * @param path Pointer to the converter path
- * @param nth The position of the converter to retrieve
- * @returns the converter at the specified index
- */
 OSyncFormatConverter *osync_converter_path_nth_edge(OSyncFormatConverterPath *path, unsigned int nth)
 {
 	osync_assert(path);
 	return g_list_nth_data(path->converters, nth);
 }
 
-/*! @brief Returns configuration for converter path 
- * @param path Pointer to the converter path
- * @returns The converter path configuration 
- */
 const char *osync_converter_path_get_config(OSyncFormatConverterPath *path)
 {
 	osync_assert(path);
 	return path->config;
 }
 
-/*! @brief Sets the configuration for converter path 
- * @param path Pointer to the converter path
- * @param config The converter path configuration
- */
 void osync_converter_path_set_config(OSyncFormatConverterPath *path, const char *config)
 {
 	osync_assert(path);
@@ -446,4 +336,3 @@ void osync_converter_finalize(OSyncFormatConverter *converter)
 	}
 }
 
-/*@}*/

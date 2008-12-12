@@ -50,6 +50,6 @@ OSyncChange *osync_change_clone(OSyncChange *source, OSyncError **error);
  */
 osync_bool osync_change_duplicate(OSyncChange *change, osync_bool *dirty, OSyncError **error);
 
-/*@}*/
+
 
 #endif /*_OPENSYNC_CHANGE_INTERNALS_H_*/

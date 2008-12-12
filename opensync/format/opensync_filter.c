@@ -26,21 +26,6 @@
 #include "opensync_filter_internals.h"
 #include "opensync_filter_private.h"
 
-/**
- * @defgroup OSyncFilterAPI OpenSync Filter
- * @ingroup OSyncPublic
- * @brief Allows filtering of changes as they pass through OpenSync
- * 
- */
-/*@{*/
-
-/** @brief Creates a new filter
- * 
- * @param objtype the object type handled by the filter
- * @param action the action that should be invoked by the filter
- * @param error Pointer to an error struct
- * @returns A newly allocated filter
- **/
 OSyncFilter *osync_filter_new(const char *objtype, OSyncFilterAction action, OSyncError **error)
 {
 	OSyncFilter *filter = NULL;
@@ -62,14 +47,6 @@ error:
 	return NULL;
 }
 
-/** @brief Creates a new filter that uses a custom filter
- * 
- * @param custom_filter Custom filter to use
- * @param config configuration to be used by the custom filter. Must be a null-terminated string.
- * @param action the action that should be invoked by the filter
- * @param error Pointer to an error struct
- * @returns A newly allocated filter
- **/
 OSyncFilter *osync_filter_new_custom(OSyncCustomFilter *custom_filter, const char *config, OSyncFilterAction action, OSyncError **error)
 {
 	OSyncFilter *filter = NULL;
@@ -94,11 +71,6 @@ error:
 	return NULL;
 }
 
-/*! @brief Increase the reference count on a filter
- * 
- * @param filter Pointer to the filter
- * 
- */
 OSyncFilter *osync_filter_ref(OSyncFilter *filter)
 {
 	osync_assert(filter);
@@ -108,11 +80,6 @@ OSyncFilter *osync_filter_ref(OSyncFilter *filter)
 	return filter;
 }
 
-/*! @brief Decrease the reference count on a filter
- * 
- * @param filter Pointer to the filter
- * 
- */
 void osync_filter_unref(OSyncFilter *filter)
 {
 	osync_assert(filter);
@@ -128,13 +95,6 @@ void osync_filter_unref(OSyncFilter *filter)
 	}
 }
 
-/** @brief Sets the config for a filter
- * 
- * Config must be a null-terminated string
- * 
- * @param filter The filter
- * @param config The new config for this filter
- **/
 void osync_filter_set_config(OSyncFilter *filter, const char *config)
 {
 	osync_trace(TRACE_ENTRY, "%s(%p, %s)", __func__, filter, config);
@@ -147,34 +107,18 @@ void osync_filter_set_config(OSyncFilter *filter, const char *config)
 	osync_trace(TRACE_EXIT, "%s", __func__);
 }
 
-/** @brief Gets the config of a filter
- * 
- * @param filter The filter
- * @returns The config of this filter
- **/
 const char *osync_filter_get_config(OSyncFilter *filter)
 {
 	osync_assert(filter);
 	return filter->config;
 }
 
-/** @brief Gets the object type of a filter
- * 
- * @param filter The filter
- * @returns The object type handled by the specified filter
- **/
 const char *osync_filter_get_objtype(OSyncFilter *filter)
 {
 	osync_assert(filter);
 	return filter->objtype;
 }
 
-/** @brief Invokes a filter on a data object
- * 
- * @param filter The filter
- * @param data The data to be passed into the filter
- * @returns The result of the filter (action)
- **/
 OSyncFilterAction osync_filter_invoke(OSyncFilter *filter, OSyncData *data)
 {
 	osync_assert(filter);
@@ -200,15 +144,6 @@ OSyncFilterAction osync_filter_invoke(OSyncFilter *filter, OSyncData *data)
 	return OSYNC_FILTER_IGNORE;	
 }
 
-/** @brief Creates a new custom filter
- * 
- * @param objtype the object type handled by the custom filter
- * @param objformat the object format handled by the custom filter
- * @param name name of the custom filter
- * @param hook the filter callback function
- * @param error Pointer to an error struct
- * @returns A newly allocated custom filter
- **/
 OSyncCustomFilter *osync_custom_filter_new(const char *objtype, const char *objformat, const char *name, OSyncFilterFunction hook, OSyncError **error)
 {
 	OSyncCustomFilter *filter = NULL;
@@ -232,11 +167,6 @@ error:
 	return NULL;
 }
 
-/*! @brief Increase the reference count on a custom filter
- * 
- * @param filter Pointer to the custom filter
- * 
- */
 OSyncCustomFilter *osync_custom_filter_ref(OSyncCustomFilter *filter)
 {
 	osync_assert(filter);
@@ -246,11 +176,6 @@ OSyncCustomFilter *osync_custom_filter_ref(OSyncCustomFilter *filter)
 	return filter;
 }
 
-/*! @brief Decrease the reference count on a custom filter
- * 
- * @param filter Pointer to the custom filter
- * 
- */
 void osync_custom_filter_unref(OSyncCustomFilter *filter)
 {
 	osync_assert(filter);
@@ -269,13 +194,6 @@ void osync_custom_filter_unref(OSyncCustomFilter *filter)
 	}
 }
 
-/** @brief Invokes a custom filter on a data object
- * 
- * @param filter The custom filter
- * @param data The data to be passed into the custom filter
- * @param config Configuration to be used by the custom filter. Must be a null-terminated string.
- * @returns The result of the filter (action)
- **/
 osync_bool osync_custom_filter_invoke(OSyncCustomFilter *filter, OSyncData *data, const char *config)
 {
 	osync_assert(filter);
@@ -293,4 +211,3 @@ osync_bool osync_custom_filter_invoke(OSyncCustomFilter *filter, OSyncData *data
 	return filter->hook(data, config);
 }
 
-/*@}*/

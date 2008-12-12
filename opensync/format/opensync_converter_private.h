@@ -21,6 +21,15 @@
 #ifndef OPENSYNC_CONVERTER_PRIVATE_H_
 #define OPENSYNC_CONVERTER_PRIVATE_H_
 
+
+/**
+ * @defgroup OSyncConverterPrivateAPI OpenSync Converter
+ * @ingroup OSyncFormatPrivate
+ * @brief Private part for creating and managing object format converters
+ * 
+ */
+/*@{*/
+
 /*! @brief Represent a converter from one format to another
  */
 struct OSyncFormatConverter {
@@ -35,10 +44,13 @@ struct OSyncFormatConverter {
 	void *userdata;
 };
 
+/** Shortest conversion path between formats */
 struct OSyncFormatConverterPath {
 	GList *converters;
 	char *config;
 	int ref_count;
 };
+
+/*@}*/
 
 #endif /*OPENSYNC_CONVERTER_PRIVATE_H_*/

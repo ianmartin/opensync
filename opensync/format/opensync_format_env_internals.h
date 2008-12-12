@@ -21,6 +21,14 @@
 #ifndef _OPENSYNC_FORMAT_ENV_INTERNALS_H_
 #define _OPENSYNC_FORMAT_ENV_INTERNALS_H_
 
+/**
+ * @defgroup OSyncFormatEnvInternalAPI OpenSync Format Environment Internals
+ * @ingroup OSyncFormatPrivate
+ * @brief The internal API of the OpenSync Format Environment
+ * 
+ */
+/*@{*/
+
 /** A target function for osync_conv_find_path_fn() */
 typedef osync_bool (*OSyncPathTargetFn)(const void *data, OSyncObjFormat *fmt);
 
@@ -78,4 +86,7 @@ typedef struct OSyncFormatConverterPathVertice {
 } OSyncFormatConverterPathVertice;
 
 typedef osync_bool (*OSyncTargetLastConverterFn)(const void *data, OSyncFormatConverterTree *tree);
+
+/*@}*/
+
 #endif //_OPENSYNC_FORMAT_ENV_INTERNALS_H_

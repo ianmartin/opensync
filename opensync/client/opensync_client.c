@@ -698,7 +698,7 @@ static osync_bool _osync_client_handle_finalize(OSyncClient *client, OSyncMessag
   }
 	
   if (client->plugin_env) {
-    osync_plugin_env_free(client->plugin_env);
+    osync_plugin_env_unref(client->plugin_env);
     client->plugin_env = NULL;
   }
 	

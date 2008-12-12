@@ -429,7 +429,7 @@ static osync_bool init(OSyncError **error) {
   osync_format_env_free(format_env);
   format_env = NULL;
  error_free_pluginenv:
-  osync_plugin_env_free(plugin_env);
+  osync_plugin_env_unref(plugin_env);
   plugin_env = NULL;
  error:	
   return FALSE;
@@ -1218,7 +1218,7 @@ static osync_bool plugin_list(OSyncError **error) {
   osync_format_env_free(format_env);
   format_env = NULL;
  error_free_pluginenv:
-  osync_plugin_env_free(plugin_env);
+  osync_plugin_env_unref(plugin_env);
   plugin_env = NULL;
  error:	
   return FALSE;
@@ -1255,7 +1255,7 @@ int main(int argc, char **argv) {
 
  success:
   if (plugin_env)
-    osync_plugin_env_free(plugin_env);
+    osync_plugin_env_unref(plugin_env);
 
   for (o=cmdlist; o; o = o->next) {
     Command *cmd = o->data;
@@ -1272,7 +1272,7 @@ int main(int argc, char **argv) {
   finalize_plugin(&plugin_data);
   //error_free_plugin_env:
   if (plugin_env)
-    osync_plugin_env_free(plugin_env);
+    osync_plugin_env_unref(plugin_env);
 
   for (o=cmdlist; o; o = o->next) {
     Command *cmd = o->data;

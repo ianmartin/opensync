@@ -1301,7 +1301,7 @@ osync_bool osync_engine_finalize(OSyncEngine *engine, OSyncError **error)
   }
 	
   if (engine->pluginenv) {
-    osync_plugin_env_free(engine->pluginenv);
+    osync_plugin_env_unref(engine->pluginenv);
     engine->pluginenv = NULL;
   }
 	

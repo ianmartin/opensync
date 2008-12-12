@@ -37,29 +37,44 @@ OSyncPluginEnv *osync_plugin_env_new(OSyncError **error)
 		return NULL;
 	}
 	
+	env->ref_count = 1;
 	osync_trace(TRACE_EXIT, "%s: %p", __func__, env);
 	return env;
 }
 
-void osync_plugin_env_free(OSyncPluginEnv *env)
+
+OSyncPluginEnv *osync_plugin_env_ref(OSyncPluginEnv *env)
+{
+	osync_trace(TRACE_ENTRY, "%s(%p)", __func__, env);
+	osync_assert(env);
+
+	g_atomic_int_inc(&(env->ref_count));
+
+	osync_trace(TRACE_EXIT, "%s", __func__);
+	return env;
+
+}
+
+void osync_plugin_env_unref(OSyncPluginEnv *env)
 {
 	osync_trace(TRACE_ENTRY, "%s(%p)", __func__, env);
 	osync_assert(env);
 	
-	/* Free the plugins */
-	while (env->plugins) {
-		osync_plugin_unref(env->plugins->data);
-		env->plugins = g_list_remove(env->plugins, env->plugins->data);
-	}
+	if (g_atomic_int_dec_and_test(&(env->ref_count))) {
+		/* Free the plugins */
+		while (env->plugins) {
+			osync_plugin_unref(env->plugins->data);
+			env->plugins = g_list_remove(env->plugins, env->plugins->data);
+		}
 	
-	/* Unload all modules */
-	while (env->modules) {
-		osync_module_unload(env->modules->data);
-		osync_module_free(env->modules->data);
-		env->modules = g_list_remove(env->modules, env->modules->data);
+		/* Unload all modules */
+		while (env->modules) {
+			osync_module_unload(env->modules->data);
+			osync_module_free(env->modules->data);
+			env->modules = g_list_remove(env->modules, env->modules->data);
+		}
+		osync_free(env);
 	}
-	
-	g_free(env);
 	
 	osync_trace(TRACE_EXIT, "%s", __func__);
 }

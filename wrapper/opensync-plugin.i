@@ -106,7 +106,7 @@ typedef struct {} PluginEnv;
 	}
 
 	~PluginEnv() {
-		osync_plugin_env_free(self);
+		osync_plugin_env_unref(self);
 	}
 
 	void load(const char *path = NULL) {

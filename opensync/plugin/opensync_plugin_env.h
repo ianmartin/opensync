@@ -47,14 +47,27 @@
  */
 OSYNC_EXPORT OSyncPluginEnv *osync_plugin_env_new(OSyncError **error);
 
-/*! @brief Frees a osync environment
+/*! @brief Increases the reference counton an opensync plugin environment
  * 
- * Frees a osync environment and all resources.
+ * The reference count on the OSyncPluginEnv is incremented. When the
+ * reference is no longer needed it should be removed with 
+ * osync_plugin_env_unref
  * 
- * @param env Pointer to the environment to free
+ * @returns The environment passed in
  * 
  */
-OSYNC_EXPORT void osync_plugin_env_free(OSyncPluginEnv *env);
+OSYNC_EXPORT OSyncPluginEnv *osync_plugin_env_ref(OSyncPluginEnv *env);
+
+/*! @brief Removes a reference to an OSyncPluginEnv
+ * 
+ * Decrements the reference count on an osync plugin environment.  If
+ * the reference count reaches zero the environment is freed and all
+ * resources are unreferenced
+ * 
+ * @param env Pointer to the environment to unreference
+ * 
+ */
+OSYNC_EXPORT void osync_plugin_env_unref(OSyncPluginEnv *env);
 
 /*! @brief Loads the sync modules from a given directory
  * 

@@ -27,6 +27,8 @@ struct OSyncPluginEnv {
 	GList *modules;
 	
 	GModule *current_module;
+
+	int ref_count;
 };
 
 #endif /* _OPENSYNC_PLUGIN_ENV_PRIVATE_H_ */

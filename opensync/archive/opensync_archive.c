@@ -54,7 +54,12 @@ static osync_bool osync_archive_create_changes(OSyncDB *db, const char *objtype,
     return TRUE;
   }
 
-  query = "CREATE TABLE tbl_changes (objtype VARCHAR(64), id INTEGER, uid VARCHAR, memberid INTEGER, mappingid INTEGER, PRIMARY KEY (objtype, id) )";
+  /* The primary key is conceptually (objtype, id).  SQLite3 will only AUTOINCREMENT
+   * a single integer primary key so the primary key restricted to being id.  To
+   * enforce the entity-relationship model all queries for a single item should be:
+   * WHERE objtype='%s' AND id=%lli
+   */ 
+  query = "CREATE TABLE tbl_changes (objtype VARCHAR(64) NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT, uid VARCHAR NOT NULL, memberid INTEGER NOT NULL, mappingid INTEGER NOT NULL )";
   if (!osync_db_query(db, query, error)) {
     goto error;
   }
@@ -359,6 +364,7 @@ osync_bool osync_archive_load_changes(OSyncArchive *archive, const char *objtype
   OSyncList *result = NULL, *row = NULL, *column = NULL;
   long long int id = 0, mappingid = 0, memberid = 0;
   const char *uid = NULL;
+  const char *value_str = NULL;
 
   osync_trace(TRACE_ENTRY, "%s(%p, %s, %p, %p, %p, %p, %p)", __func__, archive, objtype, ids, uids, mappingids, memberids, error);
 
@@ -387,10 +393,32 @@ osync_bool osync_archive_load_changes(OSyncArchive *archive, const char *objtype
   for (row = result; row; row = row->next) { 
     column = row->data;
 
-    id = g_ascii_strtoull(osync_list_nth_data(column, 0), NULL, 0);
-    uid = osync_list_nth_data(column, 1); 
-    mappingid = g_ascii_strtoull(osync_list_nth_data(column, 2), NULL, 0);
-    memberid = g_ascii_strtoull(osync_list_nth_data(column, 3), NULL, 0);
+    value_str = osync_list_nth_data(column, 0);
+    if (!value_str) {
+      osync_error_set(error, OSYNC_ERROR_GENERIC, "Database table tbl_changes corrupt, id is NULL");
+      goto error;
+    }
+    id = g_ascii_strtoull(value_str, NULL, 0);
+
+    uid = osync_list_nth_data(column, 1);
+    if (!uid) {
+      osync_error_set(error, OSYNC_ERROR_GENERIC, "Database table tbl_changes corrupt, uid is NULL");
+      goto error;
+    }
+
+    value_str = osync_list_nth_data(column, 2);
+    if (!value_str) {
+      osync_error_set(error, OSYNC_ERROR_GENERIC, "Database table tbl_changes corrupt, mappingid is NULL");
+      goto error;
+    }
+    mappingid = g_ascii_strtoull(value_str, NULL, 0);
+
+    value_str = osync_list_nth_data(column, 3);
+    if (!value_str) {
+      osync_error_set(error, OSYNC_ERROR_GENERIC, "Database table tbl_changes corrupt, memberid is NULL");
+      goto error;
+    }
+    memberid = g_ascii_strtoull(value_str, NULL, 0);
 		
     *ids = osync_list_append((*ids), GINT_TO_POINTER((int)id));
     *uids = osync_list_append((*uids), g_strdup(uid));

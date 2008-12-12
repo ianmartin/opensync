@@ -600,10 +600,7 @@ static osync_bool osync_updater_restore_backup(OSyncUpdater *updater, const char
   GError *gerror = NULL;
   char *backup_groupdir = NULL;
   const char *groupdir = NULL;
-  GDir *gdir = NULL, *mdir = NULL;
-  char *gdir_entry_path = NULL, *mdir_entry_path = NULL;
-  const char *gdir_entry = NULL, *mdir_entry = NULL;
-     
+
   osync_assert(updater);
   osync_trace(TRACE_ENTRY, "%s(%p)", __func__, updater);
 

@@ -23,14 +23,14 @@
 
 
 /**
- * @defgroup OSyncConverterPrivateAPI OpenSync Converter
+ * @defgroup OSyncConverterPrivateAPI OpenSync Converter Private
  * @ingroup OSyncFormatPrivate
  * @brief Private part for creating and managing object format converters
  * 
  */
 /*@{*/
 
-/*! @brief Represent a converter from one format to another
+/** @brief Represent a converter from one format to another
  */
 struct OSyncFormatConverter {
 	OSyncObjFormat *source_format;
@@ -44,7 +44,7 @@ struct OSyncFormatConverter {
 	void *userdata;
 };
 
-/** Shortest conversion path between formats */
+/** @brief Shortest conversion path between formats */
 struct OSyncFormatConverterPath {
 	GList *converters;
 	char *config;

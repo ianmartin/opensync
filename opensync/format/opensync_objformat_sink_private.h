@@ -23,11 +23,9 @@
 
 
 /**
- * @defgroup OSyncObjFormatSink Internals
- * @ingroup OSyncPrivate
- * @brief The private API of opensync
- * 
- * This gives you an insight in the private API of opensync.
+ * @defgroup OSyncObjFormatSinkPrivateAPI OpenSync Object Format Sink Private
+ * @ingroup OSyncFormatPrivate
+ * @brief The private API of object format sink opensync
  * 
  */
 /*@{*/

@@ -24,20 +24,6 @@
 #include "opensync-format.h"
 #include "opensync_objformat_sink_private.h"
 
-/**
- * @defgroup OSyncObjFormatSink OpenSync Object Format Sink
- * @ingroup OSyncPublic
- * @brief Functions for handling object formats sinks
- * 
- */
-/*@{*/
-
-/**
- * @brief Creates a new object format sink
- * @param objformat the objformat 
- * @param error Pointer to an error struct
- * @return The pointer to the newly allocated object format sink or NULL in case of error
- */
 OSyncObjFormatSink *osync_objformat_sink_new(const char *objformat, OSyncError **error)
 {
   OSyncObjFormatSink *formatsink = NULL;
@@ -56,11 +42,6 @@ OSyncObjFormatSink *osync_objformat_sink_new(const char *objformat, OSyncError *
   return formatsink;
 }
 
-/*! @brief Increase the reference count on an object format
- * 
- * @param format Pointer to the object format
- * 
- */
 OSyncObjFormatSink *osync_objformat_sink_ref(OSyncObjFormatSink *sink)
 {
   osync_assert(sink);
@@ -70,11 +51,6 @@ OSyncObjFormatSink *osync_objformat_sink_ref(OSyncObjFormatSink *sink)
   return sink;
 }
 
-/*! @brief Decrease the reference count on an object format
- * 
- * @param format Pointer to the object format
- * 
- */
 void osync_objformat_sink_unref(OSyncObjFormatSink *sink)
 {
   osync_assert(sink);
@@ -91,34 +67,18 @@ void osync_objformat_sink_unref(OSyncObjFormatSink *sink)
   }
 }
 
-/**
- * @brief Returns the objformat of the sink 
- * @param format Pointer to the object format sink
- * @return Pointer to object format name
- */
 const char *osync_objformat_sink_get_objformat(OSyncObjFormatSink *sink)
 {
   osync_assert(sink);
   return sink->objformat;
 }
 
-/**
- * @brief Returns the conversion path config of an object format sink
- * @param format Pointer to the object format
- * @return The conversion config of the specified object format's object type
- */
 const char *osync_objformat_sink_get_config(OSyncObjFormatSink *sink)
 {
   osync_assert(sink);
   return sink->config;
 }
 
-/**
- * @brief Set the conversion path config of an object format sink
- * @param format Pointer to the object format sink
- * @param config Format specific configuration 
- * @return The conversion config of the specified object format sink
- */
 void osync_objformat_sink_set_config(OSyncObjFormatSink *sink, const char *config)
 {
   osync_assert(sink);
@@ -129,4 +89,3 @@ void osync_objformat_sink_set_config(OSyncObjFormatSink *sink, const char *confi
   sink->config = g_strdup(config);
 }
 
-/*@}*/

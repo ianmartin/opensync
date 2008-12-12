@@ -24,12 +24,12 @@
 /**
  * @defgroup OSyncFormatEnvPrivateAPI OpenSync Format Environment Private
  * @ingroup OSyncFormatPrivate
- * @brief The priavte API of the OpenSync Format Environment
+ * @brief The private API of the OpenSync Format Environment
  * 
  */
 /*@{*/
 
-/*! @brief Loads the modules from a given directory
+/** @brief Loads the modules from a given directory
  * 
  * Loads all modules from a directory into a osync environment
  * 

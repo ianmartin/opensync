@@ -179,7 +179,7 @@ static osync_bool osync_updater_process_plugin_config(OSyncUpdater *updater, OSy
     goto error;
   }
 
-  plugin_config = g_strdup_printf("%s%c%s.conf", 
+  plugin_config = osync_strdup_printf("%s%c%s.conf", 
                                   configdir, G_DIR_SEPARATOR,
                                   osync_member_get_pluginname(member));
 
@@ -193,7 +193,7 @@ static osync_bool osync_updater_process_plugin_config(OSyncUpdater *updater, OSy
   if (!g_file_test(plugin_config, G_FILE_TEST_IS_REGULAR))
     goto end;
 
-  update_stylesheet = g_strdup_printf("%s%c%s-%u%s", updater->updatesdir, 
+  update_stylesheet = osync_strdup_printf("%s%c%s-%u%s", updater->updatesdir, 
                                       G_DIR_SEPARATOR, osync_member_get_pluginname(member),
                                       updater->plugin_version, OSYNC_UPDATER_SUFFIX);
 
@@ -211,18 +211,18 @@ static osync_bool osync_updater_process_plugin_config(OSyncUpdater *updater, OSy
   if (!osync_updater_stylesheet_process(updater, plugin_config, update_stylesheet, error))
     goto error;
 
-  g_free(update_stylesheet);
+  osync_free(update_stylesheet);
  end:
-  g_free(plugin_config);
+  osync_free(plugin_config);
 
   osync_trace(TRACE_EXIT, "%s", __func__);
   return TRUE;
  error:	
   if (plugin_config)
-    g_free(plugin_config);
+    osync_free(plugin_config);
 
   if (update_stylesheet)
-    g_free(update_stylesheet);
+    osync_free(update_stylesheet);
 
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -253,7 +253,7 @@ static osync_bool osync_updater_process_member_config(OSyncUpdater *updater, OSy
     goto error;
   }
 
-  member_config = g_strdup_printf("%s%csyncmember.conf", configdir, G_DIR_SEPARATOR);
+  member_config = osync_strdup_printf("%s%csyncmember.conf", configdir, G_DIR_SEPARATOR);
   if (!member_config) {
     osync_error_set(error, OSYNC_ERROR_GENERIC, "Could not get enough memory to build member configuration path.");
     goto error;
@@ -264,7 +264,7 @@ static osync_bool osync_updater_process_member_config(OSyncUpdater *updater, OSy
     goto error;
   }
 
-  update_stylesheet = g_strdup_printf("%s%c%s-%u%s", updater->updatesdir, 
+  update_stylesheet = osync_strdup_printf("%s%c%s-%u%s", updater->updatesdir, 
                                       G_DIR_SEPARATOR, "syncmember",
                                       updater->member_version, OSYNC_UPDATER_SUFFIX);
 
@@ -282,17 +282,17 @@ static osync_bool osync_updater_process_member_config(OSyncUpdater *updater, OSy
   if (!osync_updater_stylesheet_process(updater, member_config, update_stylesheet, error))
     goto error;
 
-  g_free(member_config);
-  g_free(update_stylesheet);
+  osync_free(member_config);
+  osync_free(update_stylesheet);
 
   osync_trace(TRACE_EXIT, "%s", __func__);
   return TRUE;
  error:	
   if (member_config)
-    g_free(member_config);
+    osync_free(member_config);
 
   if (update_stylesheet)
-    g_free(update_stylesheet);
+    osync_free(update_stylesheet);
 
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -355,7 +355,7 @@ static osync_bool osync_updater_process_group(OSyncUpdater *updater, OSyncError 
     goto error;
   }
 
-  group_config = g_strdup_printf("%s%c%s", configdir, G_DIR_SEPARATOR, "syncgroup.conf");
+  group_config = osync_strdup_printf("%s%c%s", configdir, G_DIR_SEPARATOR, "syncgroup.conf");
   if (!group_config) {
     osync_error_set(error, OSYNC_ERROR_GENERIC, "Could not get enough memory to build group configuration path.");
     goto error;
@@ -366,7 +366,7 @@ static osync_bool osync_updater_process_group(OSyncUpdater *updater, OSyncError 
     goto error;
   }
 
-  update_stylesheet = g_strdup_printf("%s%c%s-%u%s", updater->updatesdir, 
+  update_stylesheet = osync_strdup_printf("%s%c%s-%u%s", updater->updatesdir, 
                                       G_DIR_SEPARATOR, "syncgroup",
                                       updater->group_version, OSYNC_UPDATER_SUFFIX);
 
@@ -384,8 +384,8 @@ static osync_bool osync_updater_process_group(OSyncUpdater *updater, OSyncError 
   if (!osync_updater_stylesheet_process(updater, group_config, update_stylesheet, error))
     goto error;
 
-  g_free(group_config);
-  g_free(update_stylesheet);
+  osync_free(group_config);
+  osync_free(update_stylesheet);
 
 
   osync_trace(TRACE_EXIT, "%s", __func__);
@@ -393,10 +393,10 @@ static osync_bool osync_updater_process_group(OSyncUpdater *updater, OSyncError 
  error:
 
   if (group_config)
-    g_free(group_config);
+    osync_free(group_config);
 
   if (update_stylesheet)
-    g_free(update_stylesheet);
+    osync_free(update_stylesheet);
 
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(error));
   return FALSE;
@@ -434,13 +434,13 @@ static char *osync_updater_create_backup(OSyncUpdater *updater, OSyncError **err
     goto error;
   }
 
-  backup_groupdir = g_strdup_printf("%s.bak", orig_groupdir);
+  backup_groupdir = osync_strdup_printf("%s.bak", orig_groupdir);
 
   /* #1 Move original group directory */
   while (g_file_test(backup_groupdir, G_FILE_TEST_IS_DIR)) {
     char *tmp = backup_groupdir;
-    backup_groupdir = g_strdup_printf("%s.bak", tmp);
-    g_free(tmp);
+    backup_groupdir = osync_strdup_printf("%s.bak", tmp);
+    osync_free(tmp);
   }
 
   if (g_stat(orig_groupdir, &orig_stat) < 0) {
@@ -473,9 +473,9 @@ static char *osync_updater_create_backup(OSyncUpdater *updater, OSyncError **err
   }
 
   while ((de = g_dir_read_name(dir))) {
-    member_path = g_strdup_printf("%s%c%s%c", backup_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR);
+    member_path = osync_strdup_printf("%s%c%s%c", backup_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR);
     if (!g_file_test(member_path, G_FILE_TEST_IS_DIR)) {
-      g_free(member_path);
+      osync_free(member_path);
       continue;
     }
 
@@ -483,12 +483,12 @@ static char *osync_updater_create_backup(OSyncUpdater *updater, OSyncError **err
       g_set_error(&gerror, G_FILE_ERROR, g_file_error_from_errno(errno), "%s", member_path);
       osync_error_set(error, OSYNC_ERROR_GENERIC, "Could not get information about member directory: %s",  gerror->message);
       g_error_free(gerror);
-      g_free(member_path);
+      osync_free(member_path);
       goto error;
     }
 
     member_dir = g_dir_open(member_path, 0, &gerror);
-    g_free(member_path);
+    osync_free(member_path);
 
     if (!member_dir) {
       osync_error_set(error, OSYNC_ERROR_IO_ERROR, "Unable to open member configdir %s", gerror->message);
@@ -496,44 +496,44 @@ static char *osync_updater_create_backup(OSyncUpdater *updater, OSyncError **err
       goto error;
     }
 
-    member_path = g_strdup_printf("%s%c%s%c", orig_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR);
+    member_path = osync_strdup_printf("%s%c%s%c", orig_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR);
     if (g_mkdir(member_path, orig_stat.st_mode) < 0) { 
       g_set_error(&gerror, G_FILE_ERROR, g_file_error_from_errno(errno), "%s", member_path);
       osync_error_set(error, OSYNC_ERROR_GENERIC, "Could not create new member directory: %s",  gerror->message);
       g_error_free(gerror);
-      g_free(member_path);
+      osync_free(member_path);
       goto error;
     }
-    g_free(member_path);
+    osync_free(member_path);
 
     while ((member_de = g_dir_read_name(member_dir))) {
-      config = g_strdup_printf("%s%c%s%c%s", backup_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR, member_de);
+      config = osync_strdup_printf("%s%c%s%c%s", backup_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR, member_de);
 			
       /* Only copy files ending with ".conf" */
       //			if (!g_file_test(config, G_FILE_TEST_IS_REGULAR) || !sscanf(config, "%*s.conf")) {
       if (!g_file_test(config, G_FILE_TEST_IS_REGULAR) || !g_pattern_match_simple("*.conf", config)) {
-        g_free(config);
+        osync_free(config);
         continue;
       }
 
       if (!g_file_get_contents(config, &content, &length, &gerror)) {
         osync_error_set(error, OSYNC_ERROR_IO_ERROR, "Failed reading configfile: %s", gerror->message);
         g_error_free(gerror);
-        g_free(config);
+        osync_free(config);
         goto error;
       }
-      g_free(config);
+      osync_free(config);
 
-      copy_config = g_strdup_printf("%s%c%s%c%s", orig_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR, member_de);
+      copy_config = osync_strdup_printf("%s%c%s%c%s", orig_groupdir, G_DIR_SEPARATOR, de, G_DIR_SEPARATOR, member_de);
 
       if (!g_file_set_contents(copy_config, content, length, &gerror)) {
         osync_error_set(error, OSYNC_ERROR_IO_ERROR, "Failed writing configfile: %s", gerror->message);
         g_error_free(gerror);
-        g_free(copy_config);
+        osync_free(copy_config);
         g_free(content);
         goto error;
       }
-      g_free(copy_config);
+      osync_free(copy_config);
       g_free(content);
 
     }
@@ -544,26 +544,26 @@ static char *osync_updater_create_backup(OSyncUpdater *updater, OSyncError **err
   g_dir_close(dir);
 
 
-  config = g_strdup_printf("%s%c%s", backup_groupdir, G_DIR_SEPARATOR, "syncgroup.conf");
+  config = osync_strdup_printf("%s%c%s", backup_groupdir, G_DIR_SEPARATOR, "syncgroup.conf");
 
   if (!g_file_get_contents(config, &content, &length, &gerror)) {
     osync_error_set(error, OSYNC_ERROR_IO_ERROR, "Failed reading group configfile: %s", gerror->message);
     g_error_free(gerror);
-    g_free(config);
+    osync_free(config);
     goto error;
   }
-  g_free(config);
+  osync_free(config);
 
-  copy_config = g_strdup_printf("%s%c%s", orig_groupdir, G_DIR_SEPARATOR, "syncgroup.conf");
+  copy_config = osync_strdup_printf("%s%c%s", orig_groupdir, G_DIR_SEPARATOR, "syncgroup.conf");
 
   if (!g_file_set_contents(copy_config, content, length, &gerror)) {
     osync_error_set(error, OSYNC_ERROR_IO_ERROR, "Failed writing group configfile: %s", gerror->message);
     g_error_free(gerror);
-    g_free(copy_config);
+    osync_free(copy_config);
     g_free(content);
     goto error;
   }
-  g_free(copy_config);
+  osync_free(copy_config);
   g_free(content);
 
   osync_trace(TRACE_EXIT, "%s: %s", __func__, backup_groupdir);
@@ -573,7 +573,7 @@ static char *osync_updater_create_backup(OSyncUpdater *updater, OSyncError **err
     g_dir_close(member_dir);
 
   if (backup_groupdir)
-    g_free(backup_groupdir);
+    osync_free(backup_groupdir);
 
   if (dir)
     g_dir_close(dir);
@@ -611,7 +611,7 @@ static osync_bool osync_updater_restore_backup(OSyncUpdater *updater, const char
     goto error;
   }
 
-  backup_groupdir = backup_path ? g_strdup(backup_path) : g_strdup_printf("%s.bak", groupdir);
+  backup_groupdir = backup_path ? osync_strdup(backup_path) : osync_strdup_printf("%s.bak", groupdir);
 
   /* Search for latest backup if no certain backup_path was given.
 
@@ -619,8 +619,8 @@ static osync_bool osync_updater_restore_backup(OSyncUpdater *updater, const char
      ~/.opensync/group1.bak.bak.bak.bak.bak.bak.bak */
   while (!backup_path && !g_file_test(backup_groupdir, G_FILE_TEST_IS_DIR)) {
     char *tmp = backup_groupdir;
-    backup_groupdir = g_strdup_printf("%s.bak", tmp);
-    g_free(tmp);
+    backup_groupdir = osync_strdup_printf("%s.bak", tmp);
+    osync_free(tmp);
   }
   if (g_unlink(groupdir) < 0) {
     g_set_error(&gerror, G_FILE_ERROR, g_file_error_from_errno(errno), "%s", groupdir);
@@ -636,12 +636,12 @@ static osync_bool osync_updater_restore_backup(OSyncUpdater *updater, const char
     goto error;
   }
 
-  g_free(backup_groupdir);
+  osync_free(backup_groupdir);
 
   osync_trace(TRACE_EXIT, "%s", __func__);
   return TRUE;
  error:
-  g_free(backup_groupdir);
+  osync_free(backup_groupdir);
   osync_trace(TRACE_EXIT_ERROR, "%s: %s", __func__, osync_error_print(&error));
   osync_updater_set_error(updater, error);
   return FALSE;
@@ -707,7 +707,7 @@ static void *osync_updater_run(void *userdata)
   g_cond_signal(updater->updating);
   g_mutex_unlock(updater->updating_mutex);
 
-  g_free(backup_dir);
+  osync_free(backup_dir);
 
   osync_trace(TRACE_EXIT, "%s", __func__);
   osync_thread_exit(updater->thread, 0);
@@ -720,7 +720,7 @@ static void *osync_updater_run(void *userdata)
  error:
 
   if (backup_dir)
-    g_free(backup_dir);
+    osync_free(backup_dir);
 
   /* TODO: Emit error signal */
   osync_updater_set_error(updater, error);
@@ -796,7 +796,7 @@ OSyncUpdater *osync_updater_new(OSyncGroup *group, OSyncError **error)
   updater->ref_count = 1;
   updater->group = group;
 
-  updater->updatesdir = g_strdup(OPENSYNC_UPDATESDIR);
+  updater->updatesdir = osync_strdup(OPENSYNC_UPDATESDIR);
 
   updater->updating_mutex = g_mutex_new();
   updater->updating = g_cond_new();
@@ -840,9 +840,9 @@ void osync_updater_unref(OSyncUpdater *updater)
       g_mutex_free(updater->updating_mutex);
 
     if (updater->updatesdir)
-      g_free(updater->updatesdir);
+      osync_free(updater->updatesdir);
 		
-    g_free(updater);
+    osync_free(updater);
   }
 }
 
@@ -966,9 +966,9 @@ void osync_updater_set_updates_directory(OSyncUpdater *updater, const char *path
   osync_assert(path);
 
   if (updater->updatesdir)
-    g_free(updater->updatesdir);
+    osync_free(updater->updatesdir);
 
-  updater->updatesdir = g_strdup(path);
+  updater->updatesdir = osync_strdup(path);
 }
 
 /*! @brief Get path of Updates directory. 
